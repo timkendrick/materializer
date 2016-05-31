@@ -1,0 +1,96 @@
+#!/usr/bin/env node
+'use strict';
+
+var path = require('path');
+var cssColorNames = require('css-color-names');
+
+var materializer = require('..');
+
+var Cli = require('../lib/utils/Cli');
+
+var pkg = require('../package.json');
+
+var cli = new Cli({
+	name: path.basename(__filename),
+	version: pkg.version,
+	description: pkg.description,
+	input: true,
+	multiple: true,
+	options: [
+		{
+			name: 'format',
+			alias: 'f',
+			type: 'string',
+			required: false,
+			description: 'Specify color format'
+		}
+	],
+	'run': function(inputColor, options) {
+		if (!inputColor) {
+			throw new Error('No input color specified');
+		}
+		var INPUT_FORMATS = {
+			'hex': /^#?([0-9a-fA-F]){3}(([0-9a-fA-F]){3})?$/,
+			'rgb': /^rgb\s*\(\s*\d+%?\s*,\s*\d+%?\s*,\s*\d+%?\s*\)$/,
+			'hsl': /^hsl\s*\(\s*\d+%?\s*,\s*\d+%?\s*,\s*\d+%?\s*\)$/,
+			'css': function(value) {
+				return (value in cssColorNames);
+			}
+		};
+		var OUTPUT_FORMATS = [
+			'hex',
+			'rgb',
+			'hsl',
+			'name'
+		];
+		var inputFormat = getColorFormat(inputColor, INPUT_FORMATS);
+		if (!inputFormat) {
+			throw new Error('Invalid input color: ' + inputColor);
+		}
+		var outputFormat = options.format || (inputFormat === 'css' ? 'hex' : inputFormat);
+		if (OUTPUT_FORMATS.indexOf(outputFormat) === -1) {
+			throw new Error('Invalid output format: ' + outputFormat);
+		}
+		var outputColor = materializer(inputColor);
+		return outputColor[outputFormat];
+
+
+		function getColorFormat(color, formats) {
+			var format = Object.keys(formats).filter(function(key) {
+				var pattern = formats[key];
+				if (typeof pattern === 'function') {
+					return pattern(color);
+				} else {
+					return pattern.test(color);
+				}
+			})[0];
+			return format || null;
+		}
+	},
+	global: [
+		{
+			name: 'help',
+			alias: null,
+			type: 'boolean',
+			required: false,
+			description: 'Output usage information'
+		},
+		{
+			name: 'version',
+			alias: null,
+			type: 'boolean',
+			required: false,
+			description: 'Output version number'
+		}
+	]
+
+});
+
+try {
+	var response = cli.process(process.argv);
+	if (typeof response !== 'undefined') {
+		process.stdout.write(response.join('\n') + '\n');
+	}
+} catch (error) {
+	process.exit(1);
+}

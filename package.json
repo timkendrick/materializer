@@ -1,0 +1,48 @@
+{
+  "name": "materializer",
+  "version": "0.1.0",
+  "description": "Convert colors to Material Design palette",
+  "main": "index.js",
+  "preferGlobal": true,
+  "bin": {
+      "materializer": "./bin/materializer"
+  },
+  "directories": {
+      "bin": "bin",
+      "lib": "lib"
+  },
+  "files": [
+      "index.js",
+      "bin",
+      "lib"
+  ],
+  "engines": {
+      "node": ">=0.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timkendrick/materializer"
+  },
+  "keywords": [
+    "color",
+    "material",
+    "design",
+    "palette",
+    "closest",
+    "nearest",
+    "convert"
+  ],
+  "author": "Tim Kendrick <timkendrick@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/timkendrick/materializer/issues"
+  },
+  "homepage": "https://github.com/timkendrick/materializer",
+  "dependencies": {
+    "color-diff": "^1.0.0",
+    "css-color-names": "0.0.3",
+    "material-colors": "^1.0.0",
+    "minimist": "^1.2.0",
+    "parse-color": "^1.0.0"
+  }
+}
