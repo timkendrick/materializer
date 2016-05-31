@@ -55,7 +55,7 @@ materializer ffcc00 -f rgb
 Multiple colors can be converted by specifying multiple input arguments:
 
 ```bash
-bin/materializer ffcc00 00ccff ff00cc --format=name
+materializer ffcc00 00ccff ff00cc --format=name
 # Outputs:
 #  Amber 400
 #  Light Blue 300
